@@ -20,7 +20,7 @@ EOF
 				  sh "docker build -t web_img:1 -f source_file ."
                   sh "docker stop web_machine || true"
                   sh "docker rm web_machine || true"
-      				  sh "docker run --name web_machine -p 80:80 -d web_img:1"
+      				  sh "docker run --name web_machine -p 80:80 -v /home/mobaxterm/testing -d web_img:1"
             }
         }
 		
