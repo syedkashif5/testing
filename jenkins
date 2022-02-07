@@ -1,0 +1,28 @@
+pipeline {
+   agent { label 'docker-machine' }
+    stages {
+        stage('pre_req') {
+            steps {
+                
+                sh ''' cat << EOF > source_file
+FROM base_img:1
+COPY ./ /var/www/html
+RUN chown -R www-data: /var/www/html
+CMD ["sh", "-c", "/etc/init.d/apache2 start ; ping 8.8.8.8"]
+EOF
+    '''
+               
+            }
+        }
+        stage('Building our image') {
+            steps {
+
+				  sh "docker build -t web_img:1 -f source_file ."
+                  sh "docker stop web_machine || true"
+                  sh "docker rm web_machine || true"
+      				  sh "docker run --name web_machine -p 80:80 -d web_img:1"
+            }
+        }
+		
+  }
+}
